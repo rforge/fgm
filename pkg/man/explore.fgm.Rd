@@ -2,10 +2,10 @@
 \alias{explore.fgm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Explore spatial scales for Floating Grid Method.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Function to explore which spatial scales are of interest to investigate with the Floating Grid Method.
 }
 \usage{
 explore.fgm(xy1, xy2 = xy1, group1 = 1, group2 = group1, trait.table, pairs = cbind(1:dim(xy1)[1], 1:dim(xy1)[1]), iter = 10000, ratio = 1, two.types = TRUE, replacement = FALSE, self.loop = FALSE)

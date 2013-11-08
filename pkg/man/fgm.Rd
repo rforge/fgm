@@ -91,7 +91,7 @@ fg <- fgm(xy1=cbind(loc.x,loc.y),trait.table=trait.table, iter=99)
 summary(fg)
 plot(fg)
   }
-}
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

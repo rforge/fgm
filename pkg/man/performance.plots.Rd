@@ -2,10 +2,10 @@
 \alias{performance.plots}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Performance plots
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Plots to monitor the performance of the Floating Grid Method
 }
 \usage{
 performance.plots(fgm)
