@@ -1,5 +1,6 @@
 \name{explore.fgm}
 \alias{explore.fgm}
+\alias{plot.explore}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Explore spatial scales for Floating Grid Method.
