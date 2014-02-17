@@ -2,39 +2,29 @@
 \alias{fgm}
 \alias{summary.fgm}
 \alias{plot.fgm}
-\alias{mcfgm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Floating Grid Method
 }
 \description{
-The Floating Grid Method is a spatially explicit permutation test for dyadic interactions. Please read the reference mentioned below before using this function.
+The Floating Grid Method is a spatially restricted permutation technique. Please read the reference mentioned below before using this function. This particular function can be used to perform permutation tests which make use of the Floating Grid permutation technique
 }
 \usage{
-fgm(xy1, xy2 = xy1, group1 = 1, group2 = group1, trait.table, pairs = cbind(1:dim(xy1)[1], 1:dim(xy1)[1]), iter = 999, ratio = 1, scale.seq = seq(from = 0, to = max(dist(rbind(xy1, xy2))), length.out = 21)[2:21], two.types = TRUE, replacement = FALSE, self.loop = TRUE)
+fgm(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dist(xy)), length.out=21)[2:21], bootstrap=FALSE, correlate=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{xy1}{
-Geographical locations of individuals of type 1.
+  \item{xy}{
+Geographical locations of observations.
 }
-  \item{xy2}{
-Geographical locations of individuals of type 2. As default the values of \code{xy1} are taken.
+  \item{group}{
+Group membership for the observations. \code{group} is optional. 
 }
-  \item{group1}{
-Group membership of individuals of type 1. \code{group1} is optional. 
-}
-  \item{group2}{
-Group membership of individuals of type 2. \code{group2} is optional and as default the values of \code{group1} are taken.
-}
-  \item{trait.table}{
-\code{n} by \code{m} table for which \code{n} is the number of individuals of type 1 and \code{m} the number of individuals od type 2. This table contains all possible values for the trait of interest.  
-}
-  \item{pairs}{
-\code{n} by 2 table for which \code{n} is the total number of observed dyadic interactions. The first column contains the individuals of type 1 and the second column the individuals of type 2 involved in the dyadic interactions. \code{pairs} is optional and as default the columns and rows of \code{trait.table} are taken respectively as the first and second column of the \code{pairs} table. 
+  \item{marks}{
+Should be a vector containing all observations, a  two-column matrix  containing two paired observations or a squared matrix containing relationships or distances between all observations (such as genetic relatedness or distance).The latter is a way to perform multivariate analyses. Note that the squared matrix does not need to be symmetrical: for instance, the genetic relatedness between paired individuals can be investigated by using males as columns and females as rows. \code{NA}s are allowed.
 }
   \item{iter}{
-Number of iterations for every grid cell size. Default is 999.
+Number of iterations for every grid cell size. Default is 999, though it is adviseable to perform 9999 interations for the final results.
 }
   \item{ratio}{
 The ratio between the sides of the grid cells. Default is 1.
@@ -42,24 +32,21 @@ The ratio between the sides of the grid cells. Default is 1.
   \item{scale.seq}{
 Sequence of all grid cell sizes that will be tested. The number, order and values of this sequence are completely free, as long as they are numeric. Default is 20 equaly spaced out grid cell sizes from slightly larger than 0 to the maximum distance between any two individuals. Use the \code{explore.fgm} function to make a informed decision on the right sequence of grid cell sizes.
 }
-  \item{two.types}{
-\code{TRUE} if the individuals are of two different types, \code{FALSE} if not. Default is \code{TRUE}.
+  \item{bootstrap}{
+\code{TRUE} if observations should to be drawn with replacement, \code{FALSE} if not. Default is \code{FALSE}.
 }
-  \item{replacement}{
-\code{TRUE} if individuals of type 2 need to be drawn with replacement, \code{FALSE} if not. Default is \code{FALSE}.
-}
-  \item{self.loop}{
-\code{TRUE} if two individuals of differnt types that share a geographical location are allowed to interact, \code{FALSE} if not. Default is \code{TRUE}.
+  \item{correlate}{
+If one wants to compare two paired observations \code{correlate} should be the method of correlation with the FGM should use as available in \code{cor.test}; so \code{"pearson"}, \code{"kendall"} or \code{"spearman"}. If \code{marks} is not a two-column matrix \code{correlate} should be \code{FALSE}. Default is \code{FALSE}.
 }
 }
 \details{
 \code{mcfgm} is the parallel computing version of \code{fgm}. \code{mcfgm} do not work under Windows.
 }
 \value{
-\code{fgm} returns an object of \code{class} "fgm", which can be accessed with the following functions: \code{summary}, \code{plot} and \code{performance.plots}.
+\code{fgm} returns an object of \code{class} "fgm", which can be accessed with the functions \code{summary} and \code{plot}.
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2013. The Floating Grid Method: a new method for spatially-explicit assessment of dyadic interactions. Manuscript submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test to explore and control for spatial autocorrelation in point pattern data. Manuscript submitted to MEE
 }
 \author{
 Reinder Radersma
@@ -72,6 +59,7 @@ Reinder Radersma
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{cor.test}}
 }
 \examples{
 
@@ -83,11 +71,7 @@ loc.y <- runif(20,0,5)
 type1 <- 11:30+runif(20,0,5)
 type2 <- 11:30+runif(20,0,5)
 
-## Take the difference between  
-## all individuals of type 1 and all individuals of type 2.
-trait.table <- array(rep(type1,each=20)-rep(type2,20),dim=c(20,20))
-
-fg <- fgm(xy1=cbind(loc.x,loc.y),trait.table=trait.table, iter=99)
+fg <- fgm(xy=cbind(loc.x,loc.y), marks=cbind(type1,type2), iter=99, correlate="pearson")
 summary(fg)
 plot(fg)
   }

@@ -4,46 +4,53 @@ function(fgm){
   if (class(fgm)!="fgm") {stop("Object needs to be of class \"fgm\"")}
   
   p.val <- function(perm,obsv){
-    return(min((sum(perm>=obsv)+1)/(sum(is.na(perm)==FALSE)+1)*2,(sum(perm<=obsv)+1)/(sum(is.na(perm)==FALSE)+1)*2,1))   
+    return(min((sum(perm>=obsv))/(sum(is.na(perm)==FALSE))*2,(sum(perm<=obsv))/(sum(is.na(perm)==FALSE))*2,1))   
   }
 
   fail <- function(perm){
     return(sum(is.na(perm))/length(perm)*100)  
   }
   
-  gm.table <- cbind(sapply(fgm$perm,'[',1),fgm$obsv$m,sapply(sapply(fgm$perm,'[',2),mean,na.rm = TRUE),sapply(sapply(fgm$perm,'[',2),quantile,probs=0.025,na.rm = TRUE),sapply(sapply(fgm$perm,'[',2),quantile,na.rm = TRUE,probs=0.975),sapply(sapply(fgm$perm,'[',2),p.val,obsv=fgm$obsv$m),sapply(sapply(fgm$perm,'[',2),fail))
-  colnames(gm.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
-  rownames(gm.table) <- rep("",dim(gm.table)[1])
-  gv.table <- cbind(sapply(fgm$perm,'[',1),fgm$obsv$v,sapply(sapply(fgm$perm,'[',3),mean,na.rm = TRUE),sapply(sapply(fgm$perm,'[',3),quantile,probs=0.025,na.rm = TRUE),sapply(sapply(fgm$perm,'[',3),quantile,na.rm = TRUE,probs=0.975),sapply(sapply(fgm$perm,'[',3),p.val,obsv=fgm$obsv$v),sapply(sapply(fgm$perm,'[',3),fail))
-  colnames(gv.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
-  rownames(gv.table) <- rep("",dim(gv.table)[1])
-  lv.table <- cbind(sapply(fgm$perm,'[',1),0,sapply(sapply(fgm$perm,'[',4),mean,na.rm = TRUE),sapply(sapply(fgm$perm,'[',4),quantile,na.rm = TRUE,probs=0.025),sapply(sapply(fgm$perm,'[',4),quantile,na.rm = TRUE,probs=0.975),sapply(sapply(fgm$perm,'[',4),p.val,obsv=0),sapply(sapply(fgm$perm,'[',4),fail))
-  colnames(lv.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
-  rownames(lv.table) <- rep("",dim(lv.table)[1])
+  if(fgm$correlate==FALSE){
+    m.table <- cbind(fgm$scales,fgm$m.list[[1]][1],sapply(fgm$m.list,mean,na.rm = TRUE),sapply(fgm$m.list,quantile,probs=0.025,na.rm = TRUE),sapply(fgm$m.list,quantile,na.rm = TRUE,probs=0.975),sapply(fgm$m.list,p.val,obsv=fgm$m.list[[1]][1]),sapply(fgm$m.list,fail))
+    colnames(m.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
+    rownames(m.table) <- rep("",dim(m.table)[1])
+    v.table <- cbind(fgm$scales,fgm$v.list[[1]][1],sapply(fgm$v.list,mean,na.rm = TRUE),sapply(fgm$v.list,quantile,probs=0.025,na.rm = TRUE),sapply(fgm$v.list,quantile,na.rm = TRUE,probs=0.975),sapply(fgm$v.list,p.val,obsv=fgm$v.list[[1]][1]),sapply(fgm$v.list,fail))
+    colnames(v.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
+    rownames(v.table) <- rep("",dim(v.table)[1])
+  }else{
+    c.table <- cbind(fgm$scales,fgm$c.list[[1]][1],sapply(fgm$c.list,mean,na.rm = TRUE),sapply(fgm$c.list,quantile,probs=0.025,na.rm = TRUE),sapply(fgm$c.list,quantile,na.rm = TRUE,probs=0.975),sapply(fgm$c.list,p.val,obsv=fgm$c.list[[1]][1]),sapply(fgm$c.list,fail))
+    colnames(c.table) <- c("cell_size","observed","mean","lower_limit", "upper_limit", "P_value", "% failures")
+    rownames(c.table) <- rep("",dim(c.table)[1])
+  }
   
   cat("\n")
   cat("======================","\n")
   cat(" Floating Grid Method","\n")
   cat("======================","\n")
   cat("\n")
-  cat(paste("Number of scales:",length(fgm$perm)),"\n")
+  cat(paste("Number of scales:",length(fgm$scales)),"\n")
   cat(paste("Number of iterations per scale:",fgm$iter),"\n")
+  if(fgm$correlate==FALSE){
   cat("\n")
-  cat("--------------------------","\n")
-  cat(" Results for global mean:","\n")
-  cat("--------------------------","\n")
+  cat("-------------------","\n")
+  cat(" Results for mean:","\n")
+  cat("-------------------","\n")
   cat("\n")
-  print(gm.table, row.names=FALSE) 
+  print(m.table, row.names=FALSE) 
   cat("\n") 
-  cat(" Results for global variance:","\n")
-  cat("------------------------------","\n")
+  cat(" Results for variance:","\n")
+  cat("-----------------------","\n")
   cat("\n")  
-  print(gv.table, row.names=FALSE)
+  print(v.table, row.names=FALSE)
   cat("\n") 
-  cat(" Results for local variance:","\n")
-  cat("-----------------------------","\n")
-  cat("\n")  
-  print(lv.table, row.names=FALSE)
-  cat("\n") 
-  
+  }else{
+    cat("\n")
+    cat("--------------------------","\n")
+    cat(" Results for",fgm$correlate,"correlation:","\n")
+    cat("--------------------------","\n")
+    cat("\n")
+    print(c.table, row.names=FALSE) 
+    cat("\n") 
+  }
 }

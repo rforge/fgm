@@ -1,10 +1,10 @@
 Package: FGM
 Type: Package
 Title: Floating Grid Method
-Version: 1.0
-Date: 2013-11-06
+Version: 2.0
+Date: 2013-02-17
 Author: Reinder Radersma & Ben Sheldon
 Maintainer: Reinder Radersma <reinder.radersma@zoo.ox.ac.uk>
-Description: FGM is a method for exploring randomness of dyadic interactions at a range of spatial scales.
+Description: FGM is a spatially restricted permutation technique. This package contains low level function for performing permutations as well as higher level functions for performing spatially restricted permutation tests and summarizing and plotting the results. 
 Suggests: multicore
 License: GPL>=3
