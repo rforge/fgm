@@ -40,7 +40,7 @@ If one wants to compare two paired observations \code{correlate} should be the m
 }
 }
 \details{
-\code{mcfgm} is the parallel computing version of \code{fgm}. \code{mcfgm} do not work under Windows.
+
 }
 \value{
 \code{fgm} returns an object of \code{class} "fgm", which can be accessed with the functions \code{summary} and \code{plot}.
