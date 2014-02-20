@@ -1,5 +1,8 @@
 fgrm <-
-function(xy,z=1:dim(xy)[1], scale, group=1, iter=999, ratio=1, FUN=fyshuffle, FUN.mani, ..., marks, pass.rand=FALSE){  
+function(xy, scale, group=1, iter=999, ratio=1, FUN=fyshuffle, FUN.mani, ..., marks, pass.rand=FALSE){  
+  
+  add.obs <- FALSE
+  z <- 1:dim(xy)[1]
   
   runrand <- function(t){
     
