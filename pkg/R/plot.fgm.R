@@ -15,7 +15,7 @@ function(fgm, plane=0, plot.zero=TRUE){
     xlims <- range(fgm$scales)
   }
 
-  if(fgm$correlate==TRUE){
+  if(fgm$correlate==FALSE){
   
     if(plane %in% c(0,1)){
     
