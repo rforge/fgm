@@ -69,10 +69,10 @@ function(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dis
   
   perms[[length(scale.seq)+1]] <- c(observed=list(1:dim(xy)[1]),replicate(iter,list(fyshuffle(1:dim(xy)[1]))))
   if(correlate==FALSE){
-    m.list[[length(scale.seq)+1]] <- cal.stat(perms[[i]],marks,mean, na.rm=TRUE)
-    v.list[[length(scale.seq)+1]] <- cal.stat(perms[[i]],marks,var, na.rm=TRUE)
+    m.list[[length(scale.seq)+1]] <- fgstat(perms[[i]],marks,mean, na.rm=TRUE)
+    v.list[[length(scale.seq)+1]] <- fgstat(perms[[i]],marks,var, na.rm=TRUE)
   }else{
-    c.list[[length(scale.seq)+1]] <- cal.stat(perms[[i]],marks,cor.est, na.rm=TRUE)
+    c.list[[length(scale.seq)+1]] <- fgstat(perms[[i]],marks,cor.est, na.rm=TRUE)
   }
     
   cat("\n")
