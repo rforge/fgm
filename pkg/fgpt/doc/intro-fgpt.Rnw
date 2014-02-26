@@ -16,8 +16,13 @@
 \hypersetup{
  pdfstartview={XYZ null null 1}}
 \usepackage{breakurl}
-% \VignetteIndexEntry{An Introduction to FGPT}
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+% \VignetteIndexEntry{An Introduction to fgpt}
 % \VignetteEngine{knitr::knitr}
+
+\makeatother
 \begin{document}
 
 <<setup, include=FALSE, cache=FALSE>>=
