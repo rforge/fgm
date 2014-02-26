@@ -53,7 +53,7 @@ In the FGPT a set of grid cell sizes is chosen, which represents the different s
 \begin{figure}[h!]
     \label{diagram}
   \centering
-    \includegraphics[width=300pt]{FGM_R1_fig1}
+    \includegraphics[width=300pt]{FGPT_fig1}
       \caption{A graphical representation of the FGPT. The grey areas represent the study area and black dots and capital letters represent locations of observations. (a) A grid of size s is projected on the original map of the area with our focal observation marked as A. (b) At the first iteration the grid is randomly moved and rotated. Observations B, C and D share the same grid cell with A. Within each grid cell, all observations are randomized. (c) At the next iteration A shares a grid cell with only two other observations, C and E. Again all observations are randomized within grid cells, so A is randomized with C and E. (d) After many iterations (for graphical purposes we show only 25) we get a distribution for the probability an observation is assigned to any of the spatial locations. The probability that A is assigned to the location of observation C is higher than to the location of observation D. This method assumes probability of being assigned to a specific location is decreases with distance to the observed location.}
 \end{figure}
 
