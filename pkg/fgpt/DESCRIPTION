@@ -1,10 +1,11 @@
 Package: fgpt
 Type: Package
 Title: Floating Grid Permutation Technique
-Version: 2.0
+Version: 2.1
 Date: 2013-02-17
 Author: Reinder Radersma & Ben Sheldon
 Maintainer: Reinder Radersma <reinder.radersma@zoo.ox.ac.uk>
-Description: fgpt is a spatially restricted permutation technique. This package contains low level functions for performing permutations and calculating statistics as well as higher level functions. Higher level functions are an easy to use function for performing spatially restricted permutation tests, a memory efficient and parallel computing version of this function, and summary and plot functions. 
-Suggests: parallel
+Description: fgpt is a spatially restricted permutation technique. This package contains low level functions for performing permutations and calculating statistics as well as higher level functions. Higher level functions are an easy to use function for performing spatially restricted permutation tests and summarize and plot results. 
+VignetteBuilder: knitr
+Suggests: knitr
 License: GPL>=3
