@@ -50,6 +50,9 @@ If \code{TRUE} the first set in the output will be the observed values.
   \item{as.matrix}{
 If \code{TRUE} the output will be a matrix. If \code{FALSE} the output will be a list, which is needed when analyzing the data with \code{cal.stat}.
 }
+  \item{pass.rand}{
+If \code{TRUE} The sets of randomized observations are also passed on to the output. Default is \code{FALSE}.
+}
 }
 \details{
 Before using those functions please read the reference or vignette. Alternatively use the more user-friendly function \code{fgeasy}. If there are missing values for the observations, leave \code{z} empty and enter the observations as \code{marks} in the \code{fgstat} function.
