@@ -8,11 +8,11 @@ Fisher-Yates shuffle
 Function to shuffle vectors according to the Fisher-Yates procedure
 }
 \usage{
-fyshuffle(seq)
+fyshuffle(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{seq}{
+  \item{x}{
 Vector containing the sequence which needs to be shuffled. This vector can be of any type and it is allowed to have one element.
 }
 }
@@ -20,11 +20,7 @@ Vector containing the sequence which needs to be shuffled. This vector can be of
 Other than the \code{sample} function \code{fyshuffle} treats a single value as a vector with one element and will therefore return this element as the shuffled version of the original vector (which are similar).
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+A randomized version of the input vector.
 }
 \references{
 Durstenfeld (1964) Communications of the ACM 7(7):420
