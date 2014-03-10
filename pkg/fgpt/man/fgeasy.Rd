@@ -1,7 +1,7 @@
 \name{fgeasy}
 \alias{fgeasy}
-\alias{summary.fgm}
-\alias{plot.fgm}
+\alias{summary.fg}
+\alias{plot.fg}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Single step version of the Floating Grid Permutation Technique
