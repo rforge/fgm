@@ -1,6 +1,9 @@
 \name{Pmajor}
 \docType{data}
 \alias{Pmajor}
+\alias{xy}
+\alias{rel1}
+\alias{rel2}
 \title{Inbreeding avoidance in the Great Tit (\emph{Parus major})}
 \description{
 This is a simulated data set of geographical locations and relatedness measures for two populations of Great Tits, a small passerine. Both populations share the geographical locations, but not the relatedness tables. The first population does not show inbreeding avoidance, while the second does.

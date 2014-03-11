@@ -1,6 +1,10 @@
 \name{Gpulex}
 \docType{data}
 \alias{Gpulex}
+\alias{Gp.xy}
+\alias{f.pheno}
+\alias{m.pheno}
+\alias{m.pheno2}
 \title{Size assortative pairing in a freshwater shrimp (\emph{Gammarus pulex})}
 \description{
 This is a simulated data set of geographical locations and body size measurements for two populations of fresh water Crustaceans. Both populations share the geographical locations and female phenotypes, but not the male phenotypes (\code{m.pheno} and \code{m.pheno2} respectively). The first population does not show size assortative pairing, while the second does.
