@@ -10,7 +10,7 @@ The \code{fgperm} function produces sets of permuted observations or indices usi
 }
 \usage{
 fgperm(xy,z=1:dim(xy)[1], scale, group=1, iter=999, ratio=1, FUN=fyshuffle, ..., add.obs=FALSE, as.matrix=FALSE)
-fgploc(xy,z=1:dim(xy)[1], scale, group=1, iter=999, ratio=1, FUN=fyshuffle, FUN.mani, ..., marks, pass.rand=FALSE)
+fgploc(xy, scale, group=1, iter=999, ratio=1, FUN=fyshuffle, FUN.mani, ..., marks, pass.rand=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
