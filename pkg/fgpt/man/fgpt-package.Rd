@@ -8,13 +8,13 @@ Floating Grid Permutation Technique
 FGPT is a spatially restricted permutation technique. The package contains both low level functions to produce permuted datasets as well as higher level functions to perform spatially restricted permutation tests and functions to summarize and plot the results.
 }
 \details{
-~~ An overview of how to use the package, including the most important functions ~~
+\code{fgeasy} is the single step version of the FGPT, which is most suitable for first time users. Please read the vignette for a more extensive discription of the method and functions.
 }
 \author{
 Reinder Radersma & Ben Sheldon
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test to explore and control for spatial autocorrelation in point pattern data. Manuscript submitted to MEE 
+Reinder Radersma & Ben C. Sheldon, 2014. A new permutation technique to explore and control for spatial autocorrelation. Manuscript submitted to MEE 
 }
 \keyword{ package }
 \examples{

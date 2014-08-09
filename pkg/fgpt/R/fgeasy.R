@@ -30,9 +30,9 @@ function(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dis
     perms <- c.list <- list()
     dist.mat <- as.matrix(dist(xy,upper = TRUE))
     diag(dist.mat) <- NA
-    w.mat <- 1/dist.mat
-    w.mat <- w.mat/max(w.mat, na.rm=TRUE)
-      
+    w.mat <- ifelse(dist.mat<=max(apply(dist.mat,1,min, na.rm=TRUE)),1,0)
+    diag(w.mat) <- 0
+    
     mori <- function(x,w.mat){
       x <- x-mean(x)
       length(x)*sum((x %*% t(x))*w.mat,na.rm=TRUE)/(sum(w.mat,na.rm=TRUE)*sum(x^2))
