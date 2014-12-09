@@ -18,7 +18,7 @@ function(fg){
     c.table <- cbind(c.table,c.table[,5]<=p.border)
     colnames(c.table) <- c("cell_size","mean","lower_limit", "upper_limit", "P_value", "% failures","Reject H0")
     rownames(c.table) <- rep("",dim(c.table)[1])
-  }else if(fg$correlate==FALSE & fg$pairwise==FALSE){
+  }else if(fg$correlate==FALSE & fg$pairwise==TRUE){
     m.table <- cbind(fg$scales,fg$m.list[[1]][1],sapply(fg$m.list,mean,na.rm = TRUE),sapply(fg$m.list,quantile,probs=0.025,na.rm = TRUE),sapply(fg$m.list,quantile,na.rm = TRUE,probs=0.975),sapply(fg$m.list,p.val,obsv=fg$m.list[[1]][1]),sapply(fg$m.list,fail))
     pvals.ordered <- m.table[order(m.table[,6]),6]
     p.border <- max(c(pvals.ordered[which(pvals.ordered<=((1:length(fg$scales))/length(fg$scales)*0.05))],0))
