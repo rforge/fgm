@@ -6,10 +6,11 @@ function(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dis
   if(dim(xy)[2]!=2) {stop("xy does not have the right dimensions")}
   if(!is.numeric(xy)) {stop("xy must be numeric")}  
   if(!is.numeric(marks)) {stop("marks must be numeric")}
-  if(is.vector(marks)){if (group!=1) {if (!(dim(xy)[1]==length(group) && dim(xy)[1]==length(marks) && length(group)==dim(marks)[1])){stop("one or more of the following arrays does not have the appropriate length or dimensions: xy, group, marks")}}}
+  if(is.vector(marks)){if (group!=1) {if (!(dim(xy)[1]==length(group) && dim(xy)[1]==length(marks) && length(group)==length(marks))){stop("one or more of the following arrays does not have the appropriate length or dimensions: xy, group, marks")}}}
   if(is.vector(marks)){if (group==1) {if (dim(xy)[1]!=length(marks)){stop("one or more of the following arrays does not have the appropriate length or dimensions: xy, marks")}}}
   if(!is.vector(marks)){if (group!=1) {if (!(dim(xy)[1]==length(group) && dim(xy)[1]==dim(marks)[1] && length(group)==dim(marks)[1])){stop("one or more of the following arrays does not have the appropriate length or dimensions: xy, group, marks")}}}
   if(!is.vector(marks)){if (group==1) {if (dim(xy)[1]!=dim(marks)[1]){stop("one or more of the following arrays does not have the appropriate length or dimensions: xy, marks")}}}
+  if(!is.vector(marks)){if (dim(marks)[1]!=dim(marks)[2]){if (dim(marks)[2]!=2){stop("marks needs to be a vector or a matrix with either 2 columns or equal numbers of rows and columns")}}}
   if(!is.numeric(iter)) {stop("iter needs to be numeric")}  
   if(!is.numeric(ratio)) {stop("ratio needs to be numeric")}  
   if(!is.logical(bootstrap)) {stop("bootstrap needs to be logical")} 
