@@ -1,5 +1,5 @@
 plot.fg <-
-function(fg, plane=0, plot.zero=TRUE){
+function(fg, plane=0, plot.zero=TRUE, sign.level=0.05){
   
   if (class(fg)!="fg") {stop("Object needs to be of class \"fg\"")}
   if (plane!=0 & plane!=1 & plane!=2) {stop("plane needs to be either 0,1 or 2")}
@@ -22,9 +22,7 @@ function(fg, plane=0, plot.zero=TRUE){
   if(fg$pairwise==FALSE){
     
     pvals <- sapply(fg$c.list,p.val,obsv=fg$c.list[[1]][1])
-    pvals.ordered <- pvals[order(pvals)]
-    p.border <- max(c(pvals.ordered[which(pvals.ordered<=((1:length(fg$scales))/length(fg$scales)*0.05))],0))
-    cols <- ifelse(pvals<=p.border,"blue","black")
+    cols <- ifelse(pvals<=sign.level,"blue","black")
 
     par(mfrow=c(1,1))
     par(fig=c(0,0.9,0,1))
@@ -45,9 +43,7 @@ function(fg, plane=0, plot.zero=TRUE){
     if(plane %in% c(0,1)){
       
       pvals <- sapply(fg$m.list,p.val,obsv=fg$m.list[[1]][1])
-      pvals.ordered <- pvals[order(pvals)]
-      p.border <- max(c(pvals.ordered[which(pvals.ordered<=((1:length(fg$scales))/length(fg$scales)*0.05))],0))
-      cols <- ifelse(pvals<=p.border,"blue","black")
+      cols <- ifelse(pvals<=sign.level,"blue","black")
       
       par(mfrow=c(1,1))
       par(fig=c(0,0.9,0,1))
@@ -70,9 +66,7 @@ function(fg, plane=0, plot.zero=TRUE){
     if(plane %in% c(0,2)){
       
       pvals <- sapply(fg$v.list,p.val,obsv=fg$v.list[[1]][1])
-      pvals.ordered <- pvals[order(pvals)]
-      p.border <- max(c(pvals.ordered[which(pvals.ordered<=((1:length(fg$scales))/length(fg$scales)*0.05))],0))
-      cols <- ifelse(pvals<=p.border,"blue","black")
+      cols <- ifelse(pvals<=sign.level,"blue","black")
       
       par(mfrow=c(1,1))
       par(fig=c(0,0.9,0,1))
@@ -93,9 +87,7 @@ function(fg, plane=0, plot.zero=TRUE){
   }else{
     
     pvals <- sapply(fg$c.list,p.val,obsv=fg$c.list[[1]][1])
-    pvals.ordered <- pvals[order(pvals)]
-    p.border <- max(c(pvals.ordered[which(pvals.ordered<=((1:length(fg$scales))/length(fg$scales)*0.05))],0))
-    cols <- ifelse(pvals<=p.border,"blue","black")
+    cols <- ifelse(pvals<=sign.level,"blue","black")
     
     par(mfrow=c(1,1))
     par(fig=c(0,0.9,0,1))
