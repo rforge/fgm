@@ -17,6 +17,3 @@ Reinder Radersma & Ben Sheldon
 Reinder Radersma & Ben C. Sheldon, 2014. A new permutation technique to explore and control for spatial autocorrelation. Manuscript submitted to MEE 
 }
 \keyword{ package }
-\examples{
-
-  }

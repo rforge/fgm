@@ -37,15 +37,7 @@ Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test for dealing with
 \author{
 Reinder Radersma
 }
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 
 #### Example for fgrand
@@ -57,7 +49,8 @@ xy <- array(runif(400,0,2), dim=c(200,2))
 test <- fgperm(xy, scale=1, iter=99, add.obs=TRUE) 
 
 ## run fgperm to produce 99 bootstraps for scale 1
-test <- fgperm(xy, scale=1, iter=99, FUN=function(x){x[sample.int(length(x),replace=TRUE)]}, add.obs=TRUE) 
+test <- fgperm(xy, scale=1, iter=99, FUN=function(x){
+          x[sample.int(length(x),replace=TRUE)]}, add.obs=TRUE) 
 
 ## 200 times 200 random distances (e.g. genetic relatedness between mated pairs)
 trait <- array(rnorm(200*200,0.6,0.1), dim=c(200,200))

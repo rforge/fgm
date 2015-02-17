@@ -35,7 +35,7 @@ function(fg, plane=0, plot.zero=TRUE, sign.level=0.05){
     par(fig=c(0.9,1,0,1),new=TRUE)
     par(mar=c(5,0.2,2,2))
     plot(0,fg$c.list[[1]][1]-sapply(fg$c.list,mean,na.rm = TRUE)[length(fg$scales)], ylim=ylims, pch=16, col=cols[length(fg$scales)], xlab="", ylab="",xaxt="n", yaxt="n")
-    axis(1, at=0, lab=quote(infinity), cex.axis=1.5)
+    axis(1, at=0, labels=quote(infinity), cex.axis=1.5)
     segments(0,fg$c.list[[1]][1]-sapply(fg$c.list,quantile,probs=0.025,na.rm = TRUE)[length(fg$scales)],0,fg$c.list[[1]][1]-sapply(fg$c.list,quantile,probs=0.975,na.rm = TRUE)[length(fg$scales)],col=cols[length(fg$scales)])
     abline(h=0, lwd=2, col="red")
     
@@ -56,7 +56,7 @@ function(fg, plane=0, plot.zero=TRUE, sign.level=0.05){
       par(fig=c(0.9,1,0,1),new=TRUE)
       par(mar=c(5,0.2,2,2))
       plot(0,sapply(fg$m.list,mean,na.rm = TRUE)[length(fg$scales)], ylim=ylims, pch=16, xlab="", ylab="",xaxt="n", yaxt="n",col=cols[length(fg$scales)])
-      axis(1, at=0, lab=quote(infinity), cex.axis=1.5)
+      axis(1, at=0, labels=quote(infinity), cex.axis=1.5)
       segments(0,sapply(fg$m.list,quantile,probs=0.025,na.rm = TRUE)[length(fg$scales)],0,sapply(fg$m.list,quantile,probs=0.975,na.rm = TRUE)[length(fg$scales)],col=cols[length(fg$scales)])
       abline(h=fg$m.list[[1]][1], lwd=2, col="red")
       }
@@ -79,7 +79,7 @@ function(fg, plane=0, plot.zero=TRUE, sign.level=0.05){
       par(fig=c(0.9,1,0,1),new=TRUE)
       par(mar=c(5,0.2,2,2))
       plot(0,sapply(fg$v.list,mean,na.rm = TRUE)[length(fg$scales)], ylim=ylims, pch=16, xlab="", ylab="",xaxt="n", yaxt="n", col=cols[length(fg$scales)])
-      axis(1, at=0, lab=quote(infinity), cex.axis=1.5)
+      axis(1, at=0, labels=quote(infinity), cex.axis=1.5)
       segments(0,sapply(fg$v.list,quantile,probs=0.025,na.rm = TRUE)[length(fg$scales)],0,sapply(fg$v.list,quantile,probs=0.975,na.rm = TRUE)[length(fg$scales)], col=cols[length(fg$scales)])
       abline(h=fg$v.list[[1]][1], lwd=2, col="red")
     }
@@ -101,7 +101,7 @@ function(fg, plane=0, plot.zero=TRUE, sign.level=0.05){
     par(fig=c(0.9,1,0,1),new=TRUE)
     par(mar=c(5,0.2,2,2))
     plot(0,sapply(fg$c.list,mean,na.rm = TRUE)[length(fg$scales)], ylim=ylims, pch=16, xlab="", ylab="",xaxt="n", yaxt="n", col=cols[length(fg$scales)])
-    axis(1, at=0, lab=quote(infinity), cex.axis=1.5)
+    axis(1, at=0, labels=quote(infinity), cex.axis=1.5)
     segments(0,sapply(fg$c.list,quantile,probs=0.025,na.rm = TRUE)[length(fg$scales)],0,sapply(fg$c.list,quantile,probs=0.975,na.rm = TRUE)[length(fg$scales)], col=cols[length(fg$scales)])
     abline(h=fg$c.list[[1]][1], lwd=2, col="red")
     }

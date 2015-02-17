@@ -28,9 +28,6 @@ Durstenfeld (1964) Communications of the ACM 7(7):420
 \author{
 Reinder Radersma
 }
-\note{
-%%  ~~further notes~~
-}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
@@ -44,7 +41,3 @@ fyshuffle(x)
 y <- c("a","b","c","d","e","f")
 fyshuffle(y)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

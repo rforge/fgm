@@ -10,7 +10,8 @@ Single step version of the Floating Grid Permutation Technique
 The Floating Grid Permutation Technique is a spatially restricted permutation technique. Please read the reference mentioned below and/or the vignette before using this function. \code{fgeasy} can be used to perform single step permutation tests. This function can be used for detecting spatial autocorrelation for univariate observations (using Moran's I), pairwise observations (using a correlation coefficient) or multivariate observations for both single and pairwise sets of multivariate observations (using mean distance or relatedness).
 }
 \usage{
-fgeasy(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dist(xy)), length.out=21)[2:21], bootstrap=FALSE, pairwise=FALSE, correlate=FALSE)
+fgeasy(xy, group=1, marks, iter=999, ratio=1, scale.seq=seq(from=0, to=max(dist(xy)), 
+  length.out=21)[2:21], bootstrap=FALSE, pairwise=FALSE, correlate=FALSE)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -43,9 +44,7 @@ Sequence of all grid cell sizes that will be tested. The number, order and value
 If one wants to compare two paired observations correlations between the observations can be used. The argument \code{correlate} can be used to pass on the peferred method of correlation as available in \code{cor.test}; so \code{"pearson"}, \code{"kendall"} or \code{"spearman"}. If \code{marks} is not a two-column matrix \code{correlate} should be \code{FALSE}. Default is \code{FALSE}.
 }
 }
-\details{
 
-}
 \value{
 \code{fgeasy} returns an object of \code{class} "fg", which can be accessed with the functions \code{summary} and \code{plot}.
 }
@@ -84,12 +83,8 @@ loc.y <- runif(20,0,5)
 type1 <- 11:30+runif(20,0,5)
 type2 <- 11:30+runif(20,0,5)
 
-fg2 <- fgeasy(xy=cbind(loc.x,loc.y), marks=cbind(type1,type2), iter=99, pairwise=TRUE, correlate="pearson")
+fg2 <- fgeasy(xy=cbind(loc.x,loc.y), marks=cbind(type1,type2), iter=99, 
+        pairwise=TRUE, correlate="pearson")
 summary(fg2)
 plot(fg2)
   }
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
