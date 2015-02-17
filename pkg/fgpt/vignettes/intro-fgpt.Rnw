@@ -1,0 +1,504 @@
+%% LyX 2.0.6 created this file. For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{parskip}
+\setlength{\parindent}{15pt}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+\usepackage{breakurl}
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{An Introduction to fgpt}
+
+\makeatother
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
+options(replace.assign=TRUE,width=90)
+@
+
+
+\title{An Introduction to the Floating Grid Permutation Technique}
+
+\author{Reinder Radersma}
+
+\maketitle
+This document describes how to use the R-package \texttt{fgpt}. The Floating Grid Permutation Technique
+(FGPT) offers functions which can be used for spatially restricted permutation tests. First the permutation
+technique will be explained. Next this documents starts with explaining the use of lower level functions
+on examples which broaden the understanding of the methodology and show the functionality of those
+functions. Lastly higher level functions will be explained which can be used to easily perform spatially
+restricted permutation tests.
+
+First install and load the \texttt{fgpt} package:
+<<install-load>>=
+install.packages("fgpt", repos="http://R-Forge.R-project.org")
+library("fgpt")
+@
+
+Some insight in the premutation technique is required to use this package. The Floating Grid Permutation Technique is introduced in Radersma and Sheldon (2015). The next paragraphs will give a short overview of the method.
+
+\section{Theory}
+Permutation tests are important in many scientific fields (for instance ecology and evolution) as they can deal with small sample sizes and various forms of dependencies among observations. A common source of dependence is spatial autocorrelation. Accounting for spatial autocorrelation is often crucial in eco-evolutionary studies, because many ecological and evolutionary processes are spatially restricted, such as gene flow, dispersal, mate choice, inter- and intraspecific competition, mutualism and predation.
+
+The FGPT is a spatially restricted permutation technique for point observations with known geographical locations. Within the randomization process, the probability an observation is assigned to any of the spatial locations is a negative function of the distance between its original and assigned location. The slope of this function depends on a preset parameter and by exploring its parameter space, non-random spatial processes can be both assessed and controlled for at multiple spatial scales.
+
+In the FGPT a set of grid cell sizes is chosen, which represents the different spatial scales that will be examined. The null distribution of observations for a particular grid cell size is calculated by first projecting the grid on a map of the geographical locations (Fig \ref{diagram}a). Next the grid is randomly moved and rotated (Fig \ref{diagram}b). Within each grid cell observations are shuffled or when appropriate sampled with replacement (bootstrapped). The statistic appropriate for testing the hypotheses is calculated. The procedure is repeated a large number of times to produce a reference null distribution of the statistic (Fig \ref{diagram}c). For every observation, and for every grid cell size, a negative near linear relationship between the distance between the original and assigned location and the probability of assignment is achieved, which simulates spatial autocorrelation (Fig \ref{diagram}d). To deal with group membership (e.g. observations were collected in multiple years) shuffling can be restricted to observations with the same group while the statistic is calculated over all observations at once.
+
+\begin{figure}[h!]
+    \label{diagram}
+  \centering
+    \includegraphics[width=300pt]{figure1}
+      \caption{A graphical representation of the FGPT. The grey areas represent the study area and black dots and capital letters represent locations of observations. (a) A grid of size s is projected on the original map of the area with our focal observation marked as A. (b) At the first iteration the grid is randomly moved and rotated. Observations B, C and D share the same grid cell with A. Within each grid cell, all observations are randomized. (c) At the next iteration A shares a grid cell with only two other observations, C and E. Again all observations are randomized within grid cells, so A is randomized with C and E. (d) After many iterations (for graphical purposes we show only 25) we get a distribution for the probability an observation is assigned to any of the spatial locations. The probability that A is assigned to the location of observation C is higher than to the location of observation D. This method assumes probability of being assigned to a specific location is decreases with distance to the observed location.}
+\end{figure}
+
+\section{Lower level functions}
+\subsection{Exploring basic principles with a 1D example}
+
+I start with a small one dimensional example. Assume 10 observations, which are conveniently spaced out on a line with a spatial unit of one between consecutive observations. So the x coordinates are in this case 1 to 10 and the y coordinates 0 for all observations.
+
+<<>>=
+x.coor <- 1:10
+y.coor <- rep(0,10)
+
+x.coor
+y.coor
+@
+
+Normally those observations would not only have coordinates, but also so-called marks. Marks are for instance measurements which were taken at the geographical locations, such as traits of individual animals or plants. For convenience I take the x-coordinates as marks and will randomize the x coordinates. This way the randomization procedures are easily traceable. I first start with a non-spatial randomization. I produce 5 sets of randomized x coordinates with the R function \texttt{sample}, which is available as a base function in R.
+
+<<>>=
+set.seed(23)
+apply(array(x.coor, dim=c(10,5)),2,sample, size=10)
+@
+
+A non-random randomization should not lead to a correlation between the original x coordinates and the locations they are assigned to by the randomization procedure. I can check this by running 1000 randomizations and plot the randomized sets to the x coordinates:
+
+<<out.width="300pt", out.height="300pt">>=
+set.seed(45)
+rand.sets1 <- apply(array(x.coor, dim=c(10,1000)),2,sample, size=10)
+plot(as.vector(rand.sets1)+runif(10000, -0.4,0.4), rep(1:10,1000)+runif(10000,
+    -0.4,0.4), col="#FF000030", pch=16, xlab="original location", 
+    ylab="assigned location", main="non spatial")
+@
+
+With a correlation test I can check whether there is correlation between the original and assigned location.
+
+<<>>=
+cor.test(rep(1:10,1000),as.vector(rand.sets1))
+@
+
+So no correlation is present.
+
+I now reproduce the previous randomizations while using the FGPT. Again I begin with 5 permutations to show how the results look like. To produce spatially restricted random datasets I use the function \texttt{fgperm} and introduce the spatial locations by combining the x and y coordinates into a two column matrix.
+
+<<>>=
+set.seed(72)
+xy <- cbind(x.coor,y.coor)
+fgperm(xy, z=x.coor, scale=3, iter=5, as.matrix=TRUE)
+@
+
+Notice that lower values tend to stay at the top of the table and the higher values at the bottom. Now see whether the Floating Grid permutations result in a correlation between the original and assigned locations.
+
+<<out.width="300pt", out.height="300pt">>=
+set.seed(24)
+rand.sets2 <- fgperm(xy, z=x.coor,scale=3, iter=1000) 
+plot(unlist(rand.sets2)+runif(10000, -0.4,0.4), rep(1:10,1000)+runif(10000,
+    -0.4,0.4), col="#FF000030", pch=16, xlab="original location",
+    ylab="assigned location", main="FGPT: scale = 3")
+@
+<<>>=
+cor.test(rep(1:10,1000),unlist(rand.sets2))
+@
+
+Well, there is a pretty strong correlation. Note that the observations of the original location 1 are only assigned to 1,2,3 and 4. I set \texttt{scale} to 3, which is the maximum distance observations are assigned to and happen to be the difference between x-coordinate 4 and 1. The FGPT should result in a negative near linear relationship between the distance between the observed and assigned location and the probability of assignment. I can check whether that is the case by plotting a histogram of for all observations that originate from 1.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+hist(unlist(rand.sets2)[which(rep(1:10,1000)==1)], breaks=0:10+0.5,
+     xlab="assigned location", main="observed location 1")
+@
+
+Hmm, that doesn't look right. There are too many observations allocated to 1. Well, that is an edge effect. More on edge effects can be found in the paper that introduced FGPT (Radersma and Sheldon 2015). Now I try a observation in the middle, for instance 5.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+hist(unlist(rand.sets2)[which(rep(1:10,1000)==5)], breaks=0:10+0.5,
+     xlab="assigned location", main="observed location 5")
+@
+
+That looks better. Now lets see what happens when I increase the scale. First to 6 and than to 1000. 
+
+<<>>=
+set.seed(7)
+xy <- cbind(x.coor,y.coor)
+fgperm(xy, z=x.coor, scale=6, iter=5, as.matrix=TRUE)
+@
+
+Low values still tend to be at the top of the table and high values at the bottom. Again I plot a 1000 permutations again and check the correlation. 
+
+<<out.width="300pt", out.height="300pt">>=
+rand.sets3 <- fgperm(xy, z=x.coor,scale=6, iter=1000, add.obs=FALSE) 
+plot(unlist(rand.sets3)+runif(10000, -0.4, 0.4), 
+     rep(1:10,1000)+runif(10000, -0.4, 0.4), col="#FF000030", pch=16, 
+     xlab="original location", ylab="assigned location", main="FGPT: scale = 6")
+
+cor.test(rep(1:10,1000),unlist(rand.sets3))
+@
+
+Still a correlation, but less steep. Note that the furthest location an observed value of 1 was assigned to is 8. This is because the near linear relationship between distance and assignment probability is tailing off to the grid cell size (i.e. \texttt{scale}) times the square root of 2. That is approxemately 8.5 in this case. So in principle values of 9 could occur, but with very small probability. Now I plot and check for a correlation when scale is 1000.
+
+<<out.width="300pt", out.height="300pt">>=
+set.seed(6)
+xy <- cbind(x.coor,y.coor)
+fgperm(xy, z=x.coor, scale=1000, iter=5, as.matrix=TRUE)
+
+rand.sets4 <- fgperm(xy, z=x.coor,scale=1000, iter=1000, add.obs=FALSE) 
+plot(unlist(rand.sets4)+runif(10000, -0.4,0.4),
+     rep(1:10,1000)+runif(10000, -0.4,0.4), col="#FF000030",
+     pch=16, xlab="original location", ylab="assigned location", main="FGPT: scale = 1000")
+cor.test(rep(1:10,1000),unlist(rand.sets4))
+@
+The results of \texttt{scale} 1000 look very similar to the results of the non spatial permutation. That makes sense, because the probability that all obervations will share the same grid cell is very large for grid cell sizes of 1000. A non spatial permutation test would yield similar results as the FGPT with infinite large grid cells.
+
+\subsection{Exploring functionalities with a 2D example}
+
+Now I am going to produce a two dimensional example, which I use to explore the functionalities of the permutation function \texttt{fgperm} and start performing some permutation tests with the function \texttt{fgstat}.
+
+For confenience I use observation locations which are situated in a grid.
+
+<<>>=
+x.coor <- rep(1:10, times=10)
+y.coor <- rep(1:10, each=10)
+@
+
+I am also going to produce three types of marks which are three independent observations (i.e. traits) belonging  to the 100 locations in the grid. I am going to investigate whether those marks show spatial autocorrelation and whether they correlate with eachother. To show the potential of the FGPT I am going to introduce spatial autocorrelation in the marks. The first two marks are affected by space alone; the first mark shows a gradient from east to west and the second from south to north.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+set.seed(29)
+mark1 <- x.coor+rnorm(100,10,2)
+mark2 <- y.coor+rnorm(100,10,2)
+plot(x.coor, y.coor, cex=(mark1-5)/10, pch=16, col="red",main="mark 1")
+plot(x.coor, y.coor, cex=(mark2-5)/10, pch=16, col="red",main="mark 2")
+@
+
+The third mark will correlate with the first mark. Although the spatial cline of the third mark is opposite to the cline of the first mark, 
+I let the third mark correlate positively to the first mark at fine spatial scales. So when the first mark is at a given location relative high compared to its neighbours, the third mark will be relative high as well. This is depicted in the following graphs. In the first graph the red bubbles represent the third mark and the open circles the first mark. 
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+set.seed(9)
+mark3 <- mark1+rnorm(100,0,0.5)+11-2*x.coor
+plot(x.coor, y.coor, cex=(mark3-3)/10, pch=16, col="red",main="mark 3")
+points(x.coor, y.coor, cex=(mark1-3)/10)
+plot(mark1,mark3, pch=16, col="red", main="Mark 1 versus mark 3")
+@
+
+Time to start using the \texttt{fgperm} function. \texttt{fgperm} is a function to produce permuted datasets in which the permutations are spatially resticted. In the previous paragraph the effect of \texttt{scale} was already investigated, so I will not discuss its functionality here. Minimally required input for \texttt{fgperm} is a two-column matrix containing the geographical coordinates of the observations and \texttt{scale}. If I leave the argument \texttt{z} empty the function will automatically permute the indices of the spatial locations, in this case 1 to 100. I could also enter for instance the first mark in \texttt{z} to permute mark 1 rather than the indices.
+
+<<>>=
+set.seed(435)
+xy <- cbind(x.coor,y.coor)
+rand1 <- fgperm(xy=xy, scale=3)
+rand2 <- fgperm(xy=xy, z=mark1, scale=3)
+
+rand1[[1]][1:10]
+rand2[[1]][1:10]
+@
+Whether I should permute indices or marks depends on my data and hypothesis. This will be discussed in more detail when I discuss the function \texttt{fgstat}. 
+
+By default the \texttt{fgperm} uses the Fisher-Yates shuffle, which is a sampling technique without replacement. Other sampling techniques can be passed on to \texttt{fgperm}, by changing the argument \texttt{FUN}. Here I show how I can sample with replacement, but other functions can be used as well.
+
+<<>>=
+set.seed(5)
+replace <- function(x){x[sample.int(length(x),replace=TRUE)]}
+rand3 <- fgperm(xy=xy, scale=3, FUN=replace)
+
+rand3[[1]][1:10]
+@
+
+As you can see index 7 is sampled twice for the first 10 locations in the first permutation. I can also change the number of iterations (default is 999), the ratio between the sides of the grid cell sizes (read the original paper for the purpose of this argument), whether I would like to add the observed values as the first permuted dataset (advisable: see Ruxton and Neuh\"{a}user (2013) for more information on good practices in permutation techniques) and whether I would like the output to be a matrix rather than a list. A list is required for the function \texttt{fgstat}, which I will introduced later. Before moving on to \texttt{fgstat} I first introduce the function \texttt{fgploc} which has some additional functionality to \texttt{fgperm} which might come in handy in certain cases. 
+
+In \texttt{fgploc} an additional function must be added which manipulates the observations within grid cells. I can for instance scale observations within grid cells. This will give information on the deviations from the mean while correcting for any non-random variation at broader spatial scales than the grid cell size. I will show a small example, but I will not go into details for when to use this function.
+
+<<>>=
+set.seed(7)
+rand4 <- fgploc(xy=xy, scale=3, marks=mark1, FUN.mani=scale)
+
+rand4[[1]][1:10]
+@
+
+Now compare the output with the output of the function \texttt{fgperm}. When I take the average of all permutated values grouped by x coordinate for both \texttt{rand4} and \texttt{rand2} an interesting difference is visible. \texttt{fgploc} results in all values to be close to 0 and not increasing with the x coordinate, while \texttt{fgperm} results in means increasing with the x coordinate. \texttt{fgploc} removed the spatial cline, however if I would increase the grid cell size this correction disappears. Note that \texttt{rand4} contains \texttt{NaN}s. This is because the function \texttt{scale} needs at least two observations per grid cell, but some observations will not share their grid cell with any other observation (this is particulary the case close to the edge).
+
+<<>>=
+round(tapply(rand4[[1]],x.coor, mean),2)
+round(tapply(rand4[[1]],x.coor, mean, na.rm=TRUE),2)
+round(tapply(rand2[[1]],x.coor, mean),2)
+@
+
+\subsection{Analyzing data: spatial autocorrelation within marks}
+
+Now I am going to start analyzing the permuted datasets. I use the function \texttt{fgstat} for this. Arguments minimally required for \texttt{fgstat} are permuted datasets which are the output of the \texttt{fgperm} or \texttt{fgploc} functions and the marks if they were not introduced in the function \texttt{fgperm}. By default \texttt{fgstat} explores the means of the permuted datasets, but other functions can be used to explore the data as well (e.g. \texttt{sd}, \texttt{var}, etc.). I first test whether the mean of mark 1 deviates from random. Before I do so, I will first add the original observations to the permuted datasets. This is not only convenient for the analyses, but also good practice (Ruxton and Neuh\"{a}user, 2013).
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+rand1 <- fgperm(xy=xy, z=mark1, scale=6, add.obs=TRUE)
+
+calc1 <- fgstat(rand1)
+hist(calc1, xlab="mean mark1", main="scale = 6")
+abline(v=calc1[1], col="red", lwd=2)
+calc1[1]
+quantile(calc1, probs=c(0.025,0.975))
+@
+
+Well the mean is exactly the same for all permutations as well as the observed mean. This does make sense, because in this case the spatially restricted permutation test explores whether patterns deviate from random given the spatial distribution and not whether marks are non-randomly distributed in space. To test for spatial autocorrelation in univariate datasets the spatial distribution of the observations need to be taken into account. This can be done by calculating Moran's I (Moran 1950; Legendre and Legendre 2012 p. 793). Moran's I is a measure for the correlation between observations and the distance between them. Moran's I relies on a so-called spatial weighting matrix. A spatial weighting matrix discribes the strenghts of the spatial relationship between all observations. This can be binary (with 1 for neighbours and 0 for non-neighbouring observations) or continious (e.g. one over the distance between observations). A binary spatial weighting matrix often works best and therefore I am using that. The single step FGPT function, \texttt{fgeasy}, also makes use of a binarary spatial weighting matrix. I define neighbours as all combinations of observations which lie within a specific distance from each other. This distance is the maximum distance of the minimum spanning tree; i.e. the minimum distance which ensures that all observations are connected. First calculate the spatial weighting matrix:
+
+<<>>=
+dist.mat <- as.matrix(dist(xy))
+diag(dist.mat) <- NA
+w.mat <- ifelse(dist.mat<=max(apply(dist.mat,1,min, na.rm=TRUE)),1,0)
+diag(w.mat) <- 0
+
+w.mat[1:4,1:4]
+@
+
+We also need a function to calculate Moran's I (Legendre and Legendre 2012 p. 793). 
+
+<<>>=
+mori <- function(x,w.mat){
+  x <- x-mean(x)
+  length(x)*sum((x %*% t(x))*w.mat,na.rm=TRUE)/(sum(w.mat,na.rm=TRUE)*sum(x^2))
+  }
+@
+
+We can now repreat the analyses, but with Moran's I rather than the mean. The function \texttt{fgstat} now also needs an argument refering to the function for calculating the test statistic (in this case \texttt{FUN = mori}) and potentially some arguments which are passed on to this function, in this case the spatial weighting matrix; \texttt{w.mat=w.mat}.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+calc2 <- fgstat(rand1, FUN=mori, w.mat=w.mat)
+hist(calc2, xlab="Moran's I for mark1", main="scale = 6")
+abline(v=calc2[1], col="red", lwd=2)
+calc2[1]
+quantile(calc2, probs=c(0.025,0.975))
+@
+
+The observed Moran's I is significantly higher than the reference distribution, so positive spatial autocorrelation is present. More on this in the paragraph on higher level functions.
+
+\subsection{Analyzing data: dependencies between marks}
+
+I can also test for correlations between all three marks. I start with mark 1 and mark 2. I combine mark 1 and mark 2 into a two column matrix and run the analyses. I need to add a function which produces the correlations as the argument \texttt{FUN}.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+set.seed(34)
+rand2 <- fgperm(xy=xy, scale=3, add.obs=TRUE)
+
+calc3 <- fgstat(rand2,cbind(mark1,mark2), FUN=cor)
+hist(calc3, xlab="corr. mark1 and mark2", main="scale = 3")
+abline(v=calc3[1], col="red", lwd=2)
+calc3[1]
+quantile(calc3, probs=c(0.025,0.975))
+@
+
+Mark 1 and mark 2 did not correlate significantly for scale 3. Now I try correlate mark 2 with mark 3 and mark 1 with mark 3.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+calc3 <- fgstat(rand2,cbind(mark2,mark3), FUN=cor)
+calc4 <- fgstat(rand2,cbind(mark1,mark3), FUN=cor)
+hist(calc3, xlab="corr. mark2 and mark3", main="scale = 3")
+abline(v=calc3[1], col="red", lwd=2)
+calc3[1]
+quantile(calc3, probs=c(0.025,0.975))
+
+hist(calc4, xlab="corr. mark1 and mark3", main="scale = 3")
+abline(v=calc4[1], col="red", lwd=2)
+calc4[1]
+quantile(calc4, probs=c(0.025,0.975))
+@
+
+So I find a significant positive correlation between mark 1 and mark 3. This means the FGPT picks up signals of the fine-scale positive correlation between mark 1 and mark 3. No let's redo the analysis for scale 20. By using a large scale I test for broad-scale effects. Will I be able to pick up the negative correlation between mark 1 and mark 3 at broader scales?
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+rand5 <- fgperm(xy=xy, scale=20, add.obs=TRUE)
+calc5 <- fgstat(rand5,cbind(mark1,mark3), FUN=cor)
+hist(calc5, xlab="corr. mark1 and mark3", main="scale = 20")
+abline(v=calc5[1], col="red", lwd=2)
+calc5[1]
+quantile(calc5, probs=c(0.025,0.975))
+@
+
+Well the correlation is still positive, but not significant anymore. I can't show there is a signifcant negative correlation at broader-scales. Whether I will be able to find such a pattern depends on many factors, such as the size of the study area and the relative strength of the fine-scale and broad-scale effects. Later in this document I will discuss an example in which I will be able to show the presence of both negative and positive spatial effects at the same time, which occur at different scales. Other than correlations I could also investigate distances or relatedness between two observations. I could for instance look at genetic relatedness between mated pairs of individuals. To investigate distances I need a distance matrix for which one of the observations is represented by the columns and the other by the rows. I will produce a relatedness matrix and analyse it. Relatedness is in this case a function of the distance between two individuals.
+
+<<out.width="200pt", out.height="200pt", fig.width=4, fig.height=4>>=
+set.seed(10)
+spatial.dist <- as.matrix(dist(xy, diag=TRUE, upper=TRUE)) 
+rel.mat <- array(rnorm(rep(1,10000),0.8-(as.vector(spatial.dist)/1000),0.02),
+                 dim=c(100,100))
+
+calc6 <- fgstat(rand1,rel.mat)
+hist(calc6, xlab="relatedness", main="scale = 3")
+abline(v=calc6[1], col="red", lwd=2)
+calc6[1]
+quantile(calc6, probs=c(0.025,0.975))
+
+calc7 <- fgstat(rand5,rel.mat)
+hist(calc7, xlab="relatedness", main="scale = 20")
+abline(v=calc7[1], col="red", lwd=2)
+calc7[1]
+quantile(calc7, probs=c(0.025,0.975))
+@
+
+So no significant relatedness for scale 3, but only for scale 20.
+
+\section{Higher level functions}
+
+The higher level functions of the FGPT make use of the function \texttt{fgperm} and \texttt{fgstat}, which I introduced in the previous chapter. The most important higher level function is \texttt{fgeasy}. Which is basically repeating the spatially restricted permutations with the FGPT for different grid cell sizes. There are also a summary and plotting functions. I will introduce the higher level functions by using the examples presented in the original manuscript (Radersma and Sheldon 2015). 
+
+\subsection{The assortative pairing example from the manuscript}
+
+In this first example I am going to show how to analyze univariate and bivariate data. The code to produce the dataset is not provided here, but can be found in the supplementary materials of the paper. The dataset is however available in the package. First we load the data and explore it. 
+
+<<>>=
+data("Gpulex")
+
+str(Gp.xy)
+str(f.pheno)
+str(m.pheno)
+@
+
+This dataset is a simulation of a population of freshwater Crustaceans living in a river section. There is spatial segregation for body size in the population due to spatial variation in water current. This should result in spatial autocorrelation for body size. First I am going to test whether that is the case. Next I will test whether there is only habitat segregation or also size assortative pairing present in the population.
+
+Is there spatial autocorrelation in male body size?
+
+<<>>=
+set.seed(12)
+
+fg1a <- fgeasy(xy=Gp.xy, marks=m.pheno, iter=99)  
+
+summary(fg1a)
+@
+
+The method automatically selects 20 grid cell sizes and also produces a non-spatial permutation test (\texttt{Inf}). The output is rather self-explainatory, except maybe the \texttt{\% of failure}. When there are missing values in the observed dataset, the Floating Grid Method will not always be able to calculate the statistics. This will be particulary the case for very small grid cell sizes. The percentage of failing permutations is printed. Now plot the results.
+
+<<out.width="300pt", out.height="200pt", fig.width=6, fig.height=4>>=
+plot(fg1a)
+@
+
+Yes, at larger spatial scales Moran's I is significantly larger than expected, meaning that males living close to eachother are more alike than males living further away.
+
+The FGPT can also deal with missing values. In fact it can deal with distances or correlations between two traits, even if the traits never share a location. The function is, in that case, not able to calculate the statistics for the observed values. Best to analyse those cases with the lower level functions. 
+
+Back to missing values. First I remove a few observations to show that the method can deal with missing values. I remove 5 observation for males and 5 for females.
+
+<<>>=
+set.seed(9)
+remove.f <- sample(200,5)
+remove.m <- sample(200,5)
+
+remove.f
+remove.m
+
+f.pheno[remove.f] <- NA
+m.pheno[remove.m] <- NA
+@
+
+Now I run the analysis to test whether there is a correlation between male and female body size.
+
+<<out.width="300pt", out.height="200pt", fig.width=6, fig.height=4>>=
+set.seed(456)
+
+fg1b <- fgeasy(xy=Gp.xy, marks=cbind(f.pheno,m.pheno), pairwise=TRUE, 
+               correlate="pearson", iter=99)  
+
+summary(fg1b)
+plot(fg1b)
+@
+
+In this case the Pearson Product Momentum correlation makes sense, but when dealing with non-normally distributed data also the Spearman Rank correlation or the Kendall's tau correlation can be used. The FGPT calls upon the \texttt{cor.test} function, so for more information on those correlations check the help pages \texttt{?cor.test}.
+
+There is also an alternative way to analyse this data. Instead of looking for correlations between the male and the female phenotypes I could look at the differences between them. To do so I first need to produce a matrix which contains all possible combinations of males and females and next run the analyses.
+
+<<>>=
+size.diff <- matrix(m.pheno, nrow=200, ncol=200) - 
+                matrix(f.pheno, nrow=200, ncol=200,byrow = TRUE)
+
+set.seed(99)
+fg1c <- fgeasy(xy=Gp.xy, marks=size.diff, iter=99, pairwise=TRUE, correlate=FALSE)  
+
+summary(fg1c)
+@
+
+In this case both the mean and the variance are explored by \texttt{fgeasy}. 
+
+<<out.width="300pt", out.height="200pt", fig.width=6, fig.height=4>>=
+plot(fg1c)
+@
+
+In this case I focus on the variance rather than the mean. I don't expect the mean to be informative, because the mean is pretty much independent of the spatial scale. There is only a bit of variation in the mean for different permutations, because of the missing values. Because of the missing values, not all individuals will be paired in every permutation which results in some variation in the average difference between female and male individuals. The variance plot looks very similar to the correlation plot (though upside down). The fact that the variance is lower than expected for grid cell size of 2.6 and larger suggests that pairs are better matched with respect to body size than expected by change.
+
+\subsection{The inbreeding avoidance example from the manuscript}
+
+To illustrate the use of the FGPT for multivariate data (e.g. relatedness), I am going to use the inbreeding avoidance example from the manuscript (only the second population of this example). First we load the data and explore it. 
+
+<<>>=
+data("Pmajor")
+
+str(xy)
+str(rel2)
+@
+
+In short, I have a population of 200 breeding pairs of birds. Because of limited dispersal there is isolation by distance (individuals are more closely related to individuals which live close by than further away). I want to test for inbreeding aviodance (the tendancy to avoid pairing with a closely related individual). 
+
+The data consists of a two column table containing the geographical locations of all breeding pairs (\texttt{xy}) and a matrix with the relateness between all males and females (\texttt{rel2}). I analyze the data with the function \texttt{fgeasy} and use \texttt{summary} and \texttt{plot} to explore the results. I run only 99 iterations to save some time, but 9999 would be advisable.
+
+<<out.width="300pt", out.height="200pt", fig.width=6, fig.height=4>>=
+set.seed(78)
+fg2a <- fgeasy(xy=xy, marks=rel2, iter=99, pairwise=TRUE, correlate=FALSE)  
+
+summary(fg2a)
+plot(fg2a)
+@
+
+In this case the means are of most interest. There is inbreeding avoidance in the population, because at the finer spatial scales individuals are less related than expected. I can also choose the grid cell size myself, to for instance focus on a certain spatial scale. Here I explore fine spatial scales.
+
+
+<<out.width="300pt", out.height="200pt", fig.width=6, fig.height=4>>=
+set.seed(11)
+fg2b <- fgeasy(xy=xy, marks=rel2, scale.seq=c(1,100,200,300,400,500,800),
+               iter=99, pairwise=TRUE, correlate=FALSE)  
+
+summary(fg2b)
+plot(fg2b, plane=1)
+@
+
+Interesting to see is that the permuted data for \texttt{scale = 1} does not have any error bars. This is also visible in the summary table. This is because all permutations are similar to the observed data. The minimum distance between two geographical locations is much larger than 1, so the permutation always result in the assigning the observed pairs together.
+
+\section{Concluding remarks}
+
+The FGPT is a spatially resticted permutation technique, which has the ability to separate various sources of spatial autocorrelation, given they act on different spatial levels and the study area is suffiently large. The \texttt{FGPT} package offers functions to perform spatially restricted permutations, calulate statistics for permuted dataset and functions to test for correlations or distances given spatial autocorrelation and to summary and plot the results. The method is free of assumptions regarding the spatial scale at which spatial processes occur. Therefore it is very suitable for systems in which there is no extensive knowledge on the scale of spatial processes and can be used to study for instance animal or plant populations that show genotypic or phenotypic variation in space. 
+
+\section{References}
+\begin{itemize}
+
+  \item
+  Legendre P and Legendre L, 2012. \emph{Numerical ecology}, Third English edition. Elsevier, Amsterdam.
+  \item
+  Moran PAP, 1950. Notes on continuous stochastic phenomena. \emph{Biometrika} 37:17-23.
+  \item
+  Radersma R and Sheldon BC, 2015. A new permutation technique to explore and control for spatial autocorrelation. \emph{Submitted}.
+  \item
+  Ruxton GD and Neuh\"{a}user M, 2013. Improving the reporting of P-values generated by randomization methods. \emph{Methods in Ecology and Evolution} 4:1033-1036.
+\end{itemize}
+
+\end{document}
