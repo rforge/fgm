@@ -1,5 +1,5 @@
 plot.fg <-
-function(x, plane=0, plot.zero=TRUE, sign.level=0.05){
+function(x, plane=0, plot.zero=TRUE, sign.level=0.05, ...){
   
   if (class(x)!="fg") {stop("Object needs to be of class \"fg\"")}
   if (plane!=0 & plane!=1 & plane!=2) {stop("plane needs to be either 0,1 or 2")}

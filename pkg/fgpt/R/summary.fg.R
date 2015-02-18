@@ -1,5 +1,5 @@
 summary.fg <-
-function(object, sign.level=0.05){
+function(object, sign.level=0.05, ...){
   
   if (class(object)!="fg") {stop("Object needs to be of class \"fg\"")}
   
