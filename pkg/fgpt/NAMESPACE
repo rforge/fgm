@@ -1,4 +1,4 @@
-exportPattern("^[[:alpha:]]+")
+S3method(summary,fg)
+S3method(plot,fg)
 
-S3method(summary, fg)
-S3method(plot, fg)
+exportPattern("^[[:alpha:]]+")
