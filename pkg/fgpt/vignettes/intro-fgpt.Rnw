@@ -46,7 +46,15 @@ This document describes how to use the R-package \texttt{fgpt}. The Floating Gri
 technique will be explained. Next this documents starts with explaining the use of lower level functions
 on examples which broaden the understanding of the methodology and show the functionality of those
 functions. Lastly higher level functions will be explained which can be used to easily perform spatially
-restricted permutation tests.Some insight in the premutation technique is required to use this package. The Floating Grid Permutation Technique is introduced in Radersma and Sheldon (2015). The next paragraphs will give a short overview of the method.
+restricted permutation tests.Some insight in the premutation technique is required to use this package.
+
+First load the fgpt package:
+
+<<>>=
+library("fgpt")
+@
+
+The Floating Grid Permutation Technique is introduced in Radersma and Sheldon (2015). The next paragraphs will give a short overview of the method.
 
 \section{Theory}
 Permutation tests are important in many scientific fields (for instance ecology and evolution) as they can deal with small sample sizes and various forms of dependencies among observations. A common source of dependence is spatial autocorrelation. Accounting for spatial autocorrelation is often crucial in eco-evolutionary studies, because many ecological and evolutionary processes are spatially restricted, such as gene flow, dispersal, mate choice, inter- and intraspecific competition, mutualism and predation.
