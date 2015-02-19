@@ -14,6 +14,6 @@ FGPT is a spatially restricted permutation technique. The package contains both 
 Reinder Radersma & Ben Sheldon
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation technique to explore and control for spatial autocorrelation. Manuscript submitted to MEE 
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \keyword{ package }

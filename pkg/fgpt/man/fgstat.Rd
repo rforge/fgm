@@ -32,7 +32,7 @@ Optional arguments to \code{FUN}. A particular useful one if dealing with missin
 \code{fgstat} returns a vector of statistics. If \code{rand} is the output of \code{fgperm} and \code{add.obs=TRUE}, the first value is the statistic for the observed data and the rest for randomizations.
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test for dealing with and exploring spatial autocorrelation submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \author{
 Reinder Radersma

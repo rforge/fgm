@@ -12,6 +12,6 @@ This is a simulated data set of geographical locations and relatedness measures 
 \format{An R data object containing one two-column matrix with geographical coordinates (\code{xy}) and two relatedness tables between all females and males of the populations (\code{rel1} and \code{rel2} respectively).}
 \source{Code to produce this data set can be found in electronic supplementary materials of the following reference.}
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test to explore and control for spatial autocorrelation in point pattern data. Manuscript submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \keyword{datasets}

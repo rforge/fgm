@@ -49,7 +49,7 @@ If one wants to compare two paired observations correlations between the observa
 \code{fgeasy} returns an object of \code{class} "fg", which can be accessed with the functions \code{summary} and \code{plot}.
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation technique to explore and control for spatial autocorrelation. Manuscript submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \author{
 Reinder Radersma

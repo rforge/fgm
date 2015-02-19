@@ -64,7 +64,7 @@ Before using those functions please read the reference or vignette. Alternativel
 \code{fgperm} returns a \code{list} or a \code{matrix}, depending on the setting of argument \code{as.matrix}.
 }
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test for dealing with and exploring spatial autocorrelation submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \author{
 Reinder Radersma

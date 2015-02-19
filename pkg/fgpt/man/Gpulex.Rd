@@ -13,6 +13,6 @@ This is a simulated data set of geographical locations and body size measurement
 \format{An R data object containing one two-column matrix with geographical coordinates (\code{Gp.xy}) and three vectors with female (\code{f.pheno})  and male body size measurements (\code{m.pheno} and \code{m.pheno2}).}
 \source{Code to produce this data set can be found in electronic supplementary materials of the following reference.}
 \references{
-Reinder Radersma & Ben C. Sheldon, 2014. A new permutation test to explore and control for spatial autocorrelation in point pattern data. Manuscript submitted to MEE
+Reinder Radersma & Ben C. Sheldon, 2015. A new permutation technique to explore and control for spatial autocorrelation. Submitted
 }
 \keyword{datasets}
